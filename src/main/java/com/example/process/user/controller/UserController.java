@@ -1,6 +1,8 @@
-package com.example.process.user;
+package com.example.process.user.controller;
 
 
+import com.example.process.user.SignupRequestDto;
+import com.example.process.user.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
