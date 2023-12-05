@@ -1,7 +1,7 @@
 package com.example.process.comment;
 
 import com.example.process.entity.Timestamped;
-import com.example.process.user.User;
+import com.example.process.user.entity.User;
 import com.example.process.post.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -4,7 +4,7 @@ import com.example.process.entity.ErrorCode;
 import com.example.process.exception.CustomException;
 import com.example.process.post.Post;
 import com.example.process.post.PostRepository;
-import com.example.process.user.User;
+import com.example.process.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

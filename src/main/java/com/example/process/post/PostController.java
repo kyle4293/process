@@ -1,10 +1,8 @@
 package com.example.process.post;
 
 
-import com.example.process.comment.CommentRequestDto;
-import com.example.process.comment.CommentResponseDto;
 import com.example.process.security.UserDetailsImpl;
-import com.example.process.user.User;
+import com.example.process.user.entity.User;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

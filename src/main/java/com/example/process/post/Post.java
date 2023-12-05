@@ -2,7 +2,7 @@ package com.example.process.post;
 
 import com.example.process.comment.Comment;
 import com.example.process.entity.Timestamped;
-import com.example.process.user.User;
+import com.example.process.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
