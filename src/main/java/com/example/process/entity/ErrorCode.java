@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    NOT_FOUND_LIKE(HttpStatus.NOT_FOUND, "좋아요를 먼저 눌러주세요"),
+    ALREADY_EXIST_LIKE(HttpStatus.CONFLICT, "이미 좋아요를 누르셨습니다"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),

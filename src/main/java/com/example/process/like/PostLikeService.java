@@ -39,7 +39,7 @@ public class PostLikeService {
                 .build();
 
         if(postLikeRepository.findByPostAndUser(post, loginUser).isPresent()){
-            throw new IllegalArgumentException("이미 좋아요 누름");
+            throw new CustomException(ErrorCode.ALREADY_EXIST_LIKE);
         }
 
         postLikeRepository.save(postLike);
@@ -57,7 +57,7 @@ public class PostLikeService {
 
         Optional<PostLike> findPostLike = postLikeRepository.findByPostAndUser(post, loginUser);
         if (findPostLike.isEmpty()) {
-            throw new IllegalArgumentException("좋아요 안누름");
+            throw new CustomException(ErrorCode.NOT_FOUND_LIKE);
         }
 
         PostLike postLike = findPostLike.get();
