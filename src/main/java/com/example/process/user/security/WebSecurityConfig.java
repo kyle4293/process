@@ -52,13 +52,18 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용
-                        .requestMatchers("process/user/**").permitAll()
+                        .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/process/posts").permitAll() // 게시물 전체 조회 부분 접근 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증 처리
         );
 
         // 필터 관리
         http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.formLogin((formLogin) ->
+                formLogin
+                        .loginPage("/api/user/login-page").permitAll()
+        );
 
         return http.build();
     }

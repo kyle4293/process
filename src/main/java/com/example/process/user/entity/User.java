@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @Getter
 @Table(name = "users")
@@ -18,13 +19,13 @@ public class User extends Timestamped {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column
     private String nickname;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String introduction;
 
     @Column(nullable = false, unique = true)
@@ -33,6 +34,8 @@ public class User extends Timestamped {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+    private Long kakaoId;
 
     public User(
             String username, String nickname,
@@ -45,5 +48,21 @@ public class User extends Timestamped {
         this.introduction = introduction;
         this.email = email;
         this.role = role;
+    }
+
+    public User(
+            String username, String password,
+            String email, UserRoleEnum role, Long kakaoId
+    ) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId =kakaoId;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }
