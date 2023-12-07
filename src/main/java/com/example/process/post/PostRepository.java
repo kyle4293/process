@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    // Query Methods: 메서드 이름으로 SQL을 생성(Select * ~)
-    List<Post> findAllByOrderByModifiedAtDesc();
+    List<Post> findAllByOrderByCreatedAtDesc();  //생성일 내림차순
 }

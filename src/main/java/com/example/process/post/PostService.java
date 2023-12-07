@@ -1,7 +1,6 @@
 package com.example.process.post;
 
 
-import com.example.process.comment.CommentRepository;
 import com.example.process.entity.ErrorCode;
 import com.example.process.exception.CustomException;
 import com.example.process.user.User;
@@ -14,75 +13,57 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
 
-    public PostService(PostRepository postRepository, CommentRepository commentRepository) {
+    public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.commentRepository = commentRepository;
     }
 
+    //게시물 생성
     @Transactional
     public PostResponseDto createPost(User user, PostRequestDto requestDto) {
-        // RequestDto -> Entity
-        Post post = new Post(user, requestDto);
 
-        // DB 저장
-        Post savePost = postRepository.save(post);
+        Post post = new Post(requestDto);
+        post.User(user);
 
-        // Entity -> ResponseDto
-        PostResponseDto postResponseDto = new PostResponseDto(savePost);
-
-        return postResponseDto;
+        postRepository.save(post);
+        return new PostResponseDto(post);
     }
 
-
+    //게시물 전체조회 (생성일 기준 내림차순)
     @Transactional
     public List<PostResponseDto> getPostList() {
-        // DB 조회
-        return postRepository.findAllByOrderByModifiedAtDesc().stream().map(PostResponseDto::new).toList();
+        return postRepository.findAllByOrderByCreatedAtDesc().stream().map(PostResponseDto::new).toList();
     }
 
+    //게시물 단일 조회
     @Transactional
     public PostResponseDto getPost(Long id) {
         Post post = findPost(id);
-        PostResponseDto postResponseDto = new PostResponseDto(post);
-        return postResponseDto;
+        return new PostResponseDto(post);
     }
 
-
+    //게시물 수정
     @Transactional
     public PostResponseDto updatePost(Long id, User user, PostRequestDto requestDto) {
-        // 해당 메모가 DB에 존재하는지 확인
+
         Post post = findPost(id);
         if (post.getUser().getId()==user.getId()){
-            // post 내용 수정
-            post.update(requestDto);
+            post.Update(requestDto);
         }
         else {
             throw new CustomException(ErrorCode.ACCESS_DENIED);
         }
 
-        PostResponseDto postResponseDto = new PostResponseDto(post);
-        return postResponseDto;
+        return new PostResponseDto(post);
     }
-
 
     @Transactional
     public Long deletePost(Long id, User user) {
-        // 해당 메모가 DB에 존재하는지 확인
-        Post post = findPost(id);
-        if (post.getUser().getId()==user.getId()){
-            // post 삭제
-            postRepository.delete(post);
-        } else {
-            throw new CustomException(ErrorCode.ACCESS_DENIED);
-        }
-
+        Post post = findUserPost(id, user);
+        postRepository.delete(post);
         return id;
     }
-
-
-    @Transactional
+    
     private Post findPost(Long id) {
         return postRepository.findById(id).orElseThrow(() -> {
                     throw new CustomException(ErrorCode.INDEX_NOT_FOUND);
@@ -90,4 +71,12 @@ public class PostService {
         );
     }
 
+    public Post findUserPost(Long id, User user) {
+        Post post = findPost(id);
+
+        if (!user.getId().equals(post.getUser().getId())) {
+            throw new CustomException(ErrorCode.ACCESS_DENIED);
+        }
+        return post;
+    }
 }

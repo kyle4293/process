@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 public class PostRequestDto {
-    @NotBlank
+
+    @NotBlank //null과 "" " " 전부 허용X
     private String title;
-    @NotBlank
-    private String contents;
+
+    @NotBlank //null과 "" " " 전부 허용X
+    private String content;
 }
