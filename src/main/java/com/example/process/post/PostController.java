@@ -1,7 +1,7 @@
 package com.example.process.post;
 
 
-import com.example.process.security.UserDetailsImpl;
+import com.example.process.user.security.UserDetailsImpl;
 import com.example.process.user.entity.User;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
