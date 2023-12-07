@@ -2,6 +2,7 @@ package com.example.process.kakao;
 
 import com.example.process.user.jwt.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,11 @@ public class KakaoController {
             HttpServletResponse response
     ) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
-        /*Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
         cookie.setPath("/");
-        response.addCookie(cookie);*/
+        response.addCookie(cookie);
+        log.info("카카오 쿠키 : " + cookie);
 
         return "redirect:/";
     }

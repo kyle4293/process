@@ -52,6 +52,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용
+                        .requestMatchers("/").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/process/posts").permitAll() // 게시물 전체 조회 부분 접근 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증 처리

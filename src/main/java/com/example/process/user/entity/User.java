@@ -16,16 +16,16 @@ public class User extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 20, unique = true)
     private String username;
 
-    @Column
+    @Column(length = 10)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length=20)
     private String password;
 
-    @Column
+    @Column(length = 50)
     private String introduction;
 
     @Column(nullable = false, unique = true)

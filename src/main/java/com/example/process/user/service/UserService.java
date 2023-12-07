@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -32,9 +30,11 @@ public class UserService {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
+        System.out.println("@@@@@@@@@@@@@@@@@@!!!!!");
         if (!checkEmail(email) && !checkNickname(nickname)) {
             checkAdminToken(requestDto);
             User user = new User(username, nickname, password, introduction, email, role);
+            System.out.println("@@@@@@@@@@@@@@@@@@user = " + user);
             userRepository.save(user);
         }
     }

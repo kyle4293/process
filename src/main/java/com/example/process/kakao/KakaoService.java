@@ -41,8 +41,6 @@ public class KakaoService {
         String createToken = jwtUtil.createToken(kakaoUser.getUsername(), kakaoUser.getRole());
         log.info("createToken : " + createToken);
 
-        // String token = jwtUtil.substringToken(createToken);
-
         return createToken;
     }
 
