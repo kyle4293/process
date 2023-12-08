@@ -14,5 +14,5 @@ public class PostRequestDto {
     private String title;
 
     @NotBlank //null과 "" " " 전부 허용X
-    private String content;
+    private String contents;
 }

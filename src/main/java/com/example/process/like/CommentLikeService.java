@@ -4,6 +4,8 @@ import com.example.process.entity.ErrorCode;
 import com.example.process.exception.CustomException;
 import com.example.process.comment.Comment;
 import com.example.process.comment.CommentRepository;
+import com.example.process.post.Post;
+import com.example.process.post.PostRepository;
 import com.example.process.user.User;
 import com.example.process.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,8 +21,13 @@ public class CommentLikeService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final PostRepository postRepository;
     @Transactional
-    public void like(Long commentId, User user) {
+    public void like(Long postId, Long commentId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new CustomException(ErrorCode.INDEX_NOT_FOUND)
+        );
+
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );
@@ -46,7 +53,11 @@ public class CommentLikeService {
 
     }
     @Transactional
-    public void unlike(Long commentId, User user) {
+    public void unlike(Long postId, Long commentId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new CustomException(ErrorCode.INDEX_NOT_FOUND)
+        );
+
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );

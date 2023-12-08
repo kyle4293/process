@@ -1,46 +1,50 @@
 package com.example.process.comment;
 
-import com.example.process.post.PostService;
+import com.example.process.CommonResponseDto;
 import com.example.process.security.UserDetailsImpl;
 import com.example.process.user.User;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequiredArgsConstructor
+@RequestMapping("/process")
 public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
-
-    @PostMapping("/post/{id}/comments")
-    public CommentResponseDto addComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @Valid @RequestBody CommentRequestDto requestDto) {
-        User user = userDetails.getUser();
-        return commentService.addComment(id, user, requestDto);
-    }
-
-    @GetMapping("/post/{id}/comments")
-    public List<CommentResponseDto> getComments(@PathVariable Long id) {
-        return commentService.getComments(id);
-    }
-
-    @PutMapping("/post/comments/{id}")
-    public CommentResponseDto updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody CommentRequestDto requestDto) {
-        User user = userDetails.getUser();
-        return commentService.updateComment(id, user, requestDto);
-    }
-
-    @DeleteMapping("/post/comments/{id}")
-    public Long deleteComments(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
+    @PostMapping("/posts/{postId}/comments")
+    public ResponseEntity<CommentResponseDto> addComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long postId, @Valid @RequestBody CommentRequestDto requestDto) {
         User user = userDetails.getUser();
 
-        return commentService.deleteComment(id, user);
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(commentService.addComment(postId, user,requestDto));
+
     }
 
+    @GetMapping("/posts/{postId}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
+
+        return ResponseEntity.ok(commentService.getComments(postId));
+    }
+
+    @PutMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentResponseDto> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDto requestDto) {
+        User user = userDetails.getUser();
+
+        return ResponseEntity.ok(commentService.updateComment(postId, commentId , user, requestDto));
+    }
+
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommonResponseDto> deleteComments(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long postId, @PathVariable Long commentId) {
+        User user = userDetails.getUser();
+        commentService.deleteComment(postId, commentId, user);
+
+        return ResponseEntity.ok(new CommonResponseDto("삭제가 완료되었습니다", HttpStatus.OK.value()));
+    }
 }

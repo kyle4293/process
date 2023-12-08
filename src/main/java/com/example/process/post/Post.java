@@ -17,39 +17,36 @@ import java.util.List;
 @Table(name = "post") // 매핑할 테이블의 이름을 지정
 @NoArgsConstructor
 public class Post extends Timestamped {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column
+    @Column(name = "title", nullable = false, length = 30)
     private String title;
+    @Column(name = "contents", nullable = false, length = 500)
+    private String contents;
 
-    @Column
-    private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY) //지연로딩
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+
     //게시물 생성
     public Post(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
+        this.contents = requestDto.getContents();
     }
 
     //게시물 수정
     public void Update(PostRequestDto requestDto){
         this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
+        this.contents = requestDto.getContents();
     }
 
     //유저
     public void User(User user){
         this.user = user;
     }
-
 }
