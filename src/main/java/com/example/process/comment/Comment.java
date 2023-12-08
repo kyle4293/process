@@ -37,6 +37,7 @@ public class Comment extends Timestamped {
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> CommentLikes;
 
+
     public Comment(CommentRequestDto requestDto) {
         this.contents = requestDto.getContents();
     }
