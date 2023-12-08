@@ -1,6 +1,7 @@
 package com.example.process.user.service;
 
 import com.example.process.user.dto.FollowerResponseDto;
+import com.example.process.user.dto.FollowingResponseDto;
 import com.example.process.user.entity.Follow;
 import com.example.process.user.entity.User;
 import com.example.process.user.repository.FollowRepository;
@@ -50,6 +51,16 @@ public class FollowService {
         List<Follow> followers = user.getFollowers();
         return followers.stream()
                 .map(follower -> new FollowerResponseDto(follower.getFollower().getUsername()))
+                .collect(Collectors.toList());
+    }
+
+    public List<FollowingResponseDto> getFollowingList(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        List<Follow> followers = user.getFollowings();
+        return followers.stream()
+                .map(following -> new FollowingResponseDto(following.getFollowing().getUsername()))
                 .collect(Collectors.toList());
     }
 }

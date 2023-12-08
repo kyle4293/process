@@ -1,6 +1,7 @@
 package com.example.process.user.controller;
 
 import com.example.process.user.dto.FollowerResponseDto;
+import com.example.process.user.dto.FollowingResponseDto;
 import com.example.process.user.entity.Follow;
 import com.example.process.user.security.UserDetailsImpl;
 import com.example.process.user.service.FollowService;
@@ -33,5 +34,11 @@ public class FollowController {
     public ResponseEntity<List<FollowerResponseDto>> getFollowerList(@PathVariable String username) {
         List<FollowerResponseDto> followers = followService.getFollowerList(username);
         return ResponseEntity.ok(followers);
+    }
+
+    @GetMapping("/{username}/followings")
+    public ResponseEntity<List<FollowingResponseDto>> getFollowingList(@PathVariable String username) {
+        List<FollowingResponseDto> followings = followService.getFollowingList(username);
+        return ResponseEntity.ok(followings);
     }
 }
