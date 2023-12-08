@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
  * Follow 관련 Service 부분
  * */
 @RestController
-@RequestMapping("/process")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/follow/{username}")
-    public void follow(
+    public void clickFollow(
             @PathVariable String username,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        followService.follow(username, userDetails.getUser());
+        followService.clickFollow(username, userDetails.getUser());
     }
 }

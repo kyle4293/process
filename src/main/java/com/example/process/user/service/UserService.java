@@ -10,6 +10,7 @@ import com.example.process.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class UserService {
 
     private UserRoleEnum role = UserRoleEnum.USER;
 
+    @Transactional
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String nickname = requestDto.getNickname();
@@ -30,11 +32,9 @@ public class UserService {
         String email = requestDto.getEmail();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        System.out.println("@@@@@@@@@@@@@@@@@@!!!!!");
         if (!checkEmail(email) && !checkNickname(nickname)) {
             checkAdminToken(requestDto);
             User user = new User(username, nickname, password, introduction, email, role);
-            System.out.println("@@@@@@@@@@@@@@@@@@user = " + user);
             userRepository.save(user);
         }
     }
