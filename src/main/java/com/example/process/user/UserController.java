@@ -1,6 +1,7 @@
 package com.example.process.user;
 
 
+import com.example.process.post.PostResponseDto;
 import com.example.process.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,15 +10,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
@@ -32,6 +30,13 @@ public class UserController {
     @GetMapping("/user/signup")
     public String signupPage() {
         return "signup";
+    }
+
+    @GetMapping("/userList")
+    public List<UserResponseDto> getUserList() {
+        List<UserResponseDto> responseDtos = userService.getUserList();
+        System.out.println("userService.getUserList() = " + userService.getUserList());
+        return userService.getUserList();
     }
 
     @PostMapping("/user/signup")

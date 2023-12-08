@@ -3,10 +3,12 @@ package com.example.process.user;
 
 
 import com.example.process.jwt.JwtUtil;
+import com.example.process.post.PostResponseDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,4 +60,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public List<UserResponseDto> getUserList() {
+        return userRepository.findAll().stream().map(UserResponseDto::new).toList();
+    }
 }
