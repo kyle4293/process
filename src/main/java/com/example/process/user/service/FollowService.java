@@ -45,9 +45,7 @@ public class FollowService {
     }
 
     public List<FollowerResponseDto> getFollowerList(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
+        User user = findUser(username);
         List<Follow> followers = user.getFollowers();
         return followers.stream()
                 .map(follower -> new FollowerResponseDto(follower.getFollower().getUsername()))
@@ -55,12 +53,15 @@ public class FollowService {
     }
 
     public List<FollowingResponseDto> getFollowingList(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
+        User user = findUser(username);
         List<Follow> followers = user.getFollowings();
         return followers.stream()
                 .map(following -> new FollowingResponseDto(following.getFollowing().getUsername()))
                 .collect(Collectors.toList());
+    }
+
+    private User findUser(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
     }
 }
