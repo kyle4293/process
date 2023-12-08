@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/post")
 public class CommentLikeController {
 
     private final CommentLikeService commentLikeService;
 
-    @PostMapping("/posts/{postId}/comments/{commentId}/likes")
+    @PostMapping("/{postId}/comment/{commentId}/like")
     public ResponseEntity<CommonResponseDto> like(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         commentLikeService.like(postId, commentId, userDetails.getUser());
@@ -24,7 +24,7 @@ public class CommentLikeController {
         return ResponseEntity.ok(new CommonResponseDto("좋아요를 누르셨습니다", HttpStatus.OK.value()));
     }
 
-    @DeleteMapping("/posts/{postId}/comments/{commentId}/likes")
+    @DeleteMapping("/{postId}/comment/{commentId}/like")
     public ResponseEntity<CommonResponseDto> dislike(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         commentLikeService.unlike(postId, commentId, userDetails.getUser());

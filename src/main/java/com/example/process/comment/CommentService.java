@@ -5,77 +5,81 @@ import com.example.process.exception.CustomException;
 import com.example.process.post.Post;
 import com.example.process.post.PostRepository;
 import com.example.process.user.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CommentService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    public CommentResponseDto addComment(Long postId, User user, CommentRequestDto requestDto) {
-        Post post = findPost(postId);
-
-        Comment comment = new Comment(requestDto);
-
-        comment.setUser(user);
-        comment.setPost(post);
-
-        Comment saveComment = commentRepository.save(comment);
-
-        return new CommentResponseDto(saveComment);
-    }
-
-    public List<CommentResponseDto> getComments(Long postId) {
-        Post post = findPost(postId);
-
-        List<Comment> comments = post.getComments();
-
-        return comments.stream().map(CommentResponseDto::new).toList();
+    public CommentService(PostRepository postRepository, CommentRepository commentRepository) {
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long postId, Long commentId,  User user, CommentRequestDto requestDto) {
-        Post post = findPost(postId);
+    public CommentResponseDto addComment(Long post_id, User user, CommentRequestDto requestDto) {
+        Post post = findPost(post_id);
+        Comment comment = new Comment(user, post, requestDto);
+        Comment saveComment = commentRepository.save(comment);
 
-        Comment comment = findComment(commentId);
+        CommentResponseDto commentResponseDto = new CommentResponseDto(saveComment);
 
-        if (comment.getUser().getId().equals(user.getId())) {
+        return commentResponseDto;
+    }
+
+    @Transactional
+    public List<CommentResponseDto> getComments(Long id) {
+        Post post = findPost(id);
+
+        List<Comment> comments = post.getComments();
+        List<CommentResponseDto> commentResponseDtos = comments.stream().map(CommentResponseDto::new).toList();
+
+        return commentResponseDtos;
+    }
+
+    @Transactional
+    public CommentResponseDto updateComment(Long id, User user, CommentRequestDto requestDto) {
+        Comment comment = findComment(id);
+        if (comment.getUser().getId()==user.getId()) {
             comment.update(requestDto);
         } else {
             throw new CustomException(ErrorCode.ACCESS_DENIED);
         }
 
-        return new CommentResponseDto(comment);
+        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+
+        return commentResponseDto;
     }
 
-    public void deleteComment(Long postId, Long commentId, User user) {
-        Post post = findPost(postId);
-
-        Comment comment = findComment(commentId);
-
-        if (comment.getUser().getId().equals(user.getId())) {
+    @Transactional
+    public Long deleteComment(Long id, User user) {
+        Comment comment = findComment(id);
+        if (comment.getUser().getId()==user.getId()) {
             commentRepository.delete(comment);
         } else {
             throw new CustomException(ErrorCode.ACCESS_DENIED);
         }
+        return id;
     }
 
-
-    public Post findPost(Long id) {
-        return postRepository.findById(id).orElseThrow(
-                () -> new CustomException(ErrorCode.INDEX_NOT_FOUND)
-                );
+    @Transactional
+    private Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.INDEX_NOT_FOUND);
+                }
+        );
     }
 
-    public Comment findComment(Long id) {
-        return commentRepository.findById(id).orElseThrow(
-                () -> new CustomException(ErrorCode.INDEX_NOT_FOUND)
+    @Transactional
+    private Comment findComment(Long id) {
+        return commentRepository.findById(id).orElseThrow(() -> {
+                    throw new CustomException(ErrorCode.INDEX_NOT_FOUND);
+                }
         );
     }
 }
