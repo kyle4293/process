@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
-@RequestMapping("/process")
+@RequestMapping("/api")
 public class KakaoController {
     private final KakaoService kakaoService;
 

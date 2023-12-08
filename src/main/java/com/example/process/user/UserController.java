@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/process")
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
