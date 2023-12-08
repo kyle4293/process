@@ -38,4 +38,8 @@ public class FollowService {
                         }
                 );
     }
+
+    public void getFollowerList(String username) {
+
+    }
 }
