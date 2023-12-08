@@ -22,14 +22,18 @@ public class Comment extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "contents", nullable = false, length = 500)
     private String contents;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> CommentLikes;
 
