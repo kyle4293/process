@@ -1,5 +1,6 @@
 package com.example.process.user.service;
 
+import com.example.process.user.dto.FollowerResponseDto;
 import com.example.process.user.entity.Follow;
 import com.example.process.user.entity.User;
 import com.example.process.user.repository.FollowRepository;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,7 +43,13 @@ public class FollowService {
                 );
     }
 
-    public void getFollowerList(String username) {
+    public List<FollowerResponseDto> getFollowerList(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
+        List<Follow> followers = user.getFollowers();
+        return followers.stream()
+                .map(follower -> new FollowerResponseDto(follower.getFollower().getUsername()))
+                .collect(Collectors.toList());
     }
 }

@@ -1,10 +1,15 @@
 package com.example.process.user.controller;
 
+import com.example.process.user.dto.FollowerResponseDto;
+import com.example.process.user.entity.Follow;
 import com.example.process.user.security.UserDetailsImpl;
 import com.example.process.user.service.FollowService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 사용자의 팔로우/언팔로우 기능과 팔로워, 팔로잉 조회 기능 등
@@ -25,7 +30,8 @@ public class FollowController {
     }
 
     @GetMapping("/{username}/followers")
-    public void getFollowerList(@PathVariable String username) {
-        followService.getFollowerList(username);
+    public ResponseEntity<List<FollowerResponseDto>> getFollowerList(@PathVariable String username) {
+        List<FollowerResponseDto> followers = followService.getFollowerList(username);
+        return ResponseEntity.ok(followers);
     }
 }
