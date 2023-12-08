@@ -1,31 +1,33 @@
 package com.example.process.like;
 
+import com.example.process.CommonResponseDto;
 import com.example.process.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/process/post")
+@RequestMapping("/api/post")
 public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
-    @PostMapping("/{post_id}/like")
-    public ResponseEntity<String> like(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<CommonResponseDto> like(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postLikeService.like(post_id, userDetails.getUser());
+        postLikeService.like(postId, userDetails.getUser());
 
-        return ResponseEntity.ok("좋아요");
+        return ResponseEntity.ok(new CommonResponseDto("좋아요를 누르셨습니다", HttpStatus.OK.value()));
     }
 
-    @DeleteMapping("{post_id}/like")
-    public ResponseEntity<String> dislike(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @DeleteMapping("{postId}/like")
+    public ResponseEntity<CommonResponseDto> dislike(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        postLikeService.unlike(post_id, userDetails.getUser());
+        postLikeService.unlike(postId, userDetails.getUser());
 
-        return ResponseEntity.ok("좋아요 취소");
+        return ResponseEntity.ok().body(new CommonResponseDto("좋아요가 취소되었습니다", HttpStatus.OK.value()));
     }
 }
