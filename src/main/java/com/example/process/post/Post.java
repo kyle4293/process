@@ -2,6 +2,7 @@ package com.example.process.post;
 
 import com.example.process.comment.Comment;
 import com.example.process.entity.Timestamped;
+import com.example.process.like.PostLike;
 import com.example.process.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,8 +21,10 @@ public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "title", nullable = false, length = 30)
     private String title;
+
     @Column(name = "contents", nullable = false, length = 500)
     private String contents;
 
@@ -32,6 +35,8 @@ public class Post extends Timestamped {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> PostLikes;
 
     public Post(User user, PostRequestDto requestDto) {
         this.user = user;
