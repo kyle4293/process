@@ -107,7 +107,7 @@ function deletePost(id) {
 
     $.ajax({
         type: "delete",
-        url: `/api/post/{id}`,
+        url: `/api/post/`+id,
         contentType: "application/json",
         success: function (response) {
                   alert('게시글이 성공적으로 삭제되었습니다.');
