@@ -1,15 +1,11 @@
 package com.example.process.user;
 
 
-import com.example.process.post.PostRequestDto;
-import com.example.process.post.PostResponseDto;
-import com.example.process.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,7 +24,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    //회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
@@ -54,7 +49,6 @@ public class UserController {
     //프로필 수정
     @PutMapping("/profile/{username}")
     public UserResponseDto updateProfile(@PathVariable String username, @RequestBody UserRequestDto requestDto) {
-
         return userService.updateProfile(username, requestDto);
     }
 
@@ -62,9 +56,8 @@ public class UserController {
     @PutMapping("/password/{username}")
     public ResponseEntity<String> updatePassword(@RequestBody PasswordUpdateRequestDto passwordUpdateRequest, @PathVariable String username) {
 
-            String currentPassword = passwordUpdateRequest.getCurrentPassword();
-            String newPassword = passwordUpdateRequest.getNewPassword();
-            return userService.updatePassword(username, currentPassword, newPassword);
+        String currentPassword = passwordUpdateRequest.getCurrentPassword();
+        String newPassword = passwordUpdateRequest.getNewPassword();
+        return userService.updatePassword(username, currentPassword, newPassword);
     }
-
 }

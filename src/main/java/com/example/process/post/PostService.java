@@ -63,8 +63,8 @@ public class PostService {
         postRepository.delete(post);
         return id;
     }
-    
-    private Post findPost(Long id) {
+
+    public Post findPost(Long id) {
         return postRepository.findById(id).orElseThrow(() -> {
                     throw new CustomException(ErrorCode.INDEX_NOT_FOUND);
                 }
