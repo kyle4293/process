@@ -96,9 +96,24 @@ function makePost() {
         url: `/api/post`,
         contentType: "application/json",
         data: JSON.stringify({title: title, contents: contents}),
+        success: function (response) {
+                  alert('게시글이 성공적으로 작성되었습니다.');
+                  window.location.reload();
+                }
     });
+}
 
-    openClose();
+function deletePost(id) {
+
+    $.ajax({
+        type: "delete",
+        url: `/api/post/{id}`,
+        contentType: "application/json",
+        success: function (response) {
+                  alert('게시글이 성공적으로 삭제되었습니다.');
+                  window.location.reload();
+                }
+    });
 }
 
 function numberWithCommas(x) {
@@ -164,11 +179,7 @@ function addPostItem(post) {
                             <div>
                                 <img class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
                                 <img class="img-icon" src="/images/chat.png" alt="댓글 아이콘"/>
-                                <img
-                                        class="img-icon"
-                                        src="/images/send.png"
-                                        alt="다이렉트 메시지 아이콘"
-                                />
+                                <img onclick="deletePost(${post.id})" class="img-icon" src="/images/delete.png" alt="삭제 아이콘"/>
                             </div>
                         </div>
 
