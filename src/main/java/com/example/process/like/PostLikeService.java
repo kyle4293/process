@@ -6,10 +6,11 @@ import com.example.process.post.Post;
 import com.example.process.post.PostRepository;
 import com.example.process.user.User;
 import com.example.process.user.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,5 +63,9 @@ public class PostLikeService {
 
         PostLike postLike = findPostLike.get();
         postLikeRepository.delete(postLike);
+    }
+
+    public List<PostLikeResponseDto> getLikeList() {
+        return postLikeRepository.findAll().stream().map(PostLikeResponseDto::new).toList();
     }
 }

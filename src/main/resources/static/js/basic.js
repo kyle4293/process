@@ -55,6 +55,20 @@ $(document).ready(function () {
             logout();
         });
 
+    $.ajax({
+        type: "get",
+        url: `/api/post/like`,
+        contentType: "application/json",
+        success: function (response) {
+            Array.from(response).forEach(postLike => {
+                let heartIcon = document.getElementById(`heart-icon-${postLike.postId}`);
+                let heartStatus = heartIcon.src;
+                if (loginUsername === postLike.username && heartStatus.includes('heart.png'))
+                    heartIcon.src = "/images/fullHeart.png";
+            })
+        }
+    });
+
     // id 가 query 인 녀석 위에서 엔터를 누르면 execSearch() 함수를 실행하라는 뜻입니다.
     $('#query').on('keypress', function (e) {
         if (e.key == 'Enter') {
@@ -100,9 +114,9 @@ function makePost() {
         contentType: "application/json",
         data: JSON.stringify({title: title, contents: contents}),
         success: function (response) {
-                  alert('게시글이 성공적으로 작성되었습니다.');
-                  window.location.reload();
-                }
+            alert('게시글이 성공적으로 작성되었습니다.');
+            window.location.reload();
+        }
     });
 }
 
@@ -110,39 +124,29 @@ function deletePost(id) {
 
     $.ajax({
         type: "delete",
-        url: `/api/post/`+id,
+        url: `/api/post/` + id,
         contentType: "application/json",
         success: function (response) {
-                  alert('게시글이 성공적으로 삭제되었습니다.');
-                  window.location.reload();
-                }
+            alert('게시글이 성공적으로 삭제되었습니다.');
+            window.location.reload();
+        }
     });
-}
-
-function getLike(id) {
-
 }
 
 function clickFillHeart(id, writer) {
     let heartIcon = document.getElementById(`heart-icon-${id}`);
     let heartStatus = heartIcon.src;
 
-    if(loginUsername === writer) {
+    if (loginUsername === writer) {
         alert('자신의 게시물에는 좋아요를 누를 수 없습니다.');
     } else {
         $.ajax({
             type: "post",
             url: `/api/post/${id}/like`,
             contentType: "application/json",
-            success: function(response) {
-                console.log("username : " + loginUsername);
-                console.log("writer : " + writer);
-                {
-                    if(heartStatus.includes('heart.png')) {
-                        heartIcon.src = "/images/fullHeart.png";
-                        console.log('heart');
-                    }
-                }
+            success: function (response) {
+                if (heartStatus.includes('heart.png'))
+                    heartIcon.src = "/images/fullHeart.png";
             }
         })
     }
@@ -157,29 +161,28 @@ function showPost(folderId = null) {
     console.log(1);
 
 
-
     let dataSource = `/api/post`;
 
 
     $('#posts').empty();
 
-        $.ajax({
-            url : `api/post`,
-            type : 'get',
-            dataType : 'json',
-            async : false,
-            success : function (response) {
-                console.log(response);
-                for (let i = 0; i < response.length; i++) {
-                        let post = response[i];
-                        let tempHtml = addPostItem(post);
-                        $('#posts').append(tempHtml);
-                }
-            },
-            error : function (request, status, error) {
-                console.log(error)
+    $.ajax({
+        url: `api/post`,
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        success: function (response) {
+            //console.log(response);
+            for (let i = 0; i < response.length; i++) {
+                let post = response[i];
+                let tempHtml = addPostItem(post);
+                $('#posts').append(tempHtml);
             }
-        })
+        },
+        error: function (request, status, error) {
+            console.log(error)
+        }
+    })
 }
 
 
@@ -232,12 +235,12 @@ function getToken() {
 
     let auth = Cookies.get('Authorization');
 
-    if(auth === undefined) {
+    if (auth === undefined) {
         return '';
     }
 
     // kakao 로그인 사용한 경우 Bearer 추가
-    if(auth.indexOf('Bearer') === -1 && auth !== ''){
+    if (auth.indexOf('Bearer') === -1 && auth !== '') {
         auth = 'Bearer ' + auth;
     }
 
