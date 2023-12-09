@@ -2,6 +2,8 @@ const host = 'http://' + window.location.host;
 let targetId;
 let folderTargetId;
 
+let loginUsername = "";
+
 $(document).ready(function () {
     const auth = getToken();
 
@@ -21,6 +23,7 @@ $(document).ready(function () {
     })
         .done(function (res, status, xhr) {
             const username = res.username;
+            loginUsername = res.username;
             const isAdmin = !!res.admin;
 
             if (!username) {
@@ -116,6 +119,35 @@ function deletePost(id) {
     });
 }
 
+function getLike(id) {
+
+}
+
+function clickFillHeart(id, writer) {
+    let heartIcon = document.getElementById(`heart-icon-${id}`);
+    let heartStatus = heartIcon.src;
+
+    if(loginUsername === writer) {
+        alert('자신의 게시물에는 좋아요를 누를 수 없습니다.');
+    } else {
+        $.ajax({
+            type: "post",
+            url: `/api/post/${id}/like`,
+            contentType: "application/json",
+            success: function(response) {
+                console.log("username : " + loginUsername);
+                console.log("writer : " + writer);
+                {
+                    if(heartStatus.includes('heart.png')) {
+                        heartIcon.src = "/images/fullHeart.png";
+                        console.log('heart');
+                    }
+                }
+            }
+        })
+    }
+}
+
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -177,7 +209,7 @@ function addPostItem(post) {
                         </div>
                         <div class="icon-feed">
                             <div>
-                                <img class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
+                                <img id="heart-icon-${post.id}" onclick="clickFillHeart(${post.id}, '${post.user_name}')" class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
                                 <img class="img-icon" src="/images/chat.png" alt="댓글 아이콘"/>
                                 <img onclick="deletePost(${post.id})" class="img-icon" src="/images/delete.png" alt="삭제 아이콘"/>
                             </div>
