@@ -153,7 +153,6 @@ function clickFillHeart(id, writer, heartIcon) {
 }
 
 function clickEmptyHeart(id, heartIcon) {
-    heartIcon.src = "/images/heart.png";
     $.ajax({
         type: "delete",
         url: `/api/post/${id}/like`,
