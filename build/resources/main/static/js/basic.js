@@ -166,7 +166,7 @@ function clickEmptyHeart(id, heartIcon) {
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}ㅉ
+}
 
 
 function showPost() {
