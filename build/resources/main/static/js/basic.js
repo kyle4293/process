@@ -61,15 +61,11 @@ $(document).ready(function () {
         contentType: "application/json",
         success: function (response) {
             Array.from(response).forEach(postLike => {
-                console.log("a#######" + postLike.postId, postLike.username);
                 let heartIcon = document.getElementById(`heart-icon-${postLike.postId}`);
                 let heartStatus = heartIcon.src;
                 if (loginUsername === postLike.username && heartStatus.includes('heart.png'))
                     heartIcon.src = "/images/fullHeart.png";
             })
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log("@@@ " + textStatus, errorThrown);
         }
     });
 
