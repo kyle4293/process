@@ -40,6 +40,8 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "follower")
     private List<Follow> followings = new ArrayList<>();
 
+    private String intro;
+
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
         this.password = password;
@@ -78,5 +80,11 @@ public class User {
     public void removeFollower(Follow follow) {
         this.followers.remove(follow);
         follow.setFollower(null);
+    }
+
+    public void updateProfile(ProfileRequestDto requestDto){
+        this.intro = requestDto.getIntro();
+        this.email = requestDto.getEmail();
+        this.password = requestDto.getPassword();
     }
 }

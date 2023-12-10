@@ -9,10 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,6 +47,14 @@ public class UserController {
         return "redirect:/api/user/login-page";
     }
 
+    @GetMapping("/userList")
+    @ResponseBody
+    public List<UserResponseDto> getUserList() {
+        List<UserResponseDto> responseDtos = userService.getUserList();
+        System.out.println("userService.getUserList() = " + userService.getUserList());
+        return userService.getUserList();
+    }
+
     // 회원 관련 정보 받기
     @GetMapping("/user-info")
     @ResponseBody
@@ -59,5 +64,19 @@ public class UserController {
         boolean isAdmin = (role == UserRoleEnum.ADMIN);
 
         return new UserInfoDto(username, isAdmin);
+    }
+
+    //프로필 조회
+    @GetMapping("/profile/{id}")
+    @ResponseBody
+    public ProfileResponseDto getProfile(@PathVariable Long id) {
+        return userService.getProfile(id);
+    }
+
+    //프로필 수정
+    @PutMapping("/profile/{id}")
+    @ResponseBody
+    public ProfileResponseDto updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ProfileRequestDto requestDto) {
+        return userService.updateProfile(id, requestDto);
     }
 }
