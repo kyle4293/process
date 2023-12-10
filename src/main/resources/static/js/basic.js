@@ -133,10 +133,18 @@ function deletePost(id) {
     });
 }
 
-function clickFillHeart(id, writer) {
+function clickHeart(id, writer) {
     let heartIcon = document.getElementById(`heart-icon-${id}`);
     let heartStatus = heartIcon.src;
 
+    if(heartStatus.includes('heart.png')) {
+        clickFillHeart(id, writer, heartIcon)
+    } else if(heartStatus.includes('fullHeart.png')) {
+        clickEmptyHeart(id, heartIcon)
+    }
+}
+
+function clickFillHeart(id, writer, heartIcon) {
     if (loginUsername === writer) {
         alert('자신의 게시물에는 좋아요를 누를 수 없습니다.');
     } else {
@@ -145,11 +153,21 @@ function clickFillHeart(id, writer) {
             url: `/api/post/${id}/like`,
             contentType: "application/json",
             success: function (response) {
-                if (heartStatus.includes('heart.png'))
-                    heartIcon.src = "/images/fullHeart.png";
+                heartIcon.src = "/images/fullHeart.png";
             }
         })
     }
+}
+
+function clickEmptyHeart(id, heartIcon) {
+    $.ajax({
+        type: "delete",
+        url: `/api/post/${id}/like`,
+        contentType: "application/json",
+        success: function (response) {
+            heartIcon.src = "/images/heart.png";
+        }
+    })
 }
 
 function numberWithCommas(x) {
@@ -212,7 +230,7 @@ function addPostItem(post) {
                         </div>
                         <div class="icon-feed">
                             <div>
-                                <img id="heart-icon-${post.id}" onclick="clickFillHeart(${post.id}, '${post.user_name}')" class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
+                                <img id="heart-icon-${post.id}" onclick="clickHeart(${post.id}, '${post.user_name}')" class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
                                 <img class="img-icon" src="/images/chat.png" alt="댓글 아이콘"/>
                                 <img onclick="deletePost(${post.id})" class="img-icon" src="/images/delete.png" alt="삭제 아이콘"/>
                             </div>
