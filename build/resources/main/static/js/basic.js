@@ -29,23 +29,9 @@ $(document).ready(function () {
             }
 
             $('#username').text(username);
-            if (isAdmin) {
-                $('#admin').text(true);
-                showPost();
-            } else {
-                showPost();
-            }
 
-            // 로그인한 유저의 폴더
-            $.ajax({
-                type: 'GET',
-                url: `/api/user-folder`,
-                error(error) {
-                    logout();
-                }
-            }).done(function (fragment) {
-                $('#fragment').replaceWith(fragment);
-            });
+            showPost();
+            showUsers();
 
         })
         .fail(function (jqXHR, textStatus) {
@@ -121,35 +107,64 @@ function numberWithCommas(x) {
 }
 
 
-function showPost(folderId = null) {
-    console.log(1);
-
-
-
-    let dataSource = `/api/post`;
-
-
+function showPost() {
     $('#posts').empty();
-
-        $.ajax({
-            url : `api/post`,
-            type : 'get',
-            dataType : 'json',
-            async : false,
-            success : function (response) {
-                console.log(response);
-                for (let i = 0; i < response.length; i++) {
-                        let post = response[i];
-                        let tempHtml = addPostItem(post);
-                        $('#posts').append(tempHtml);
-                }
-            },
-            error : function (request, status, error) {
-                console.log(error)
+    $.ajax({
+        url : `api/post`,
+        type : 'get',
+        dataType : 'json',
+        async : false,
+        success : function (response) {
+            console.log(response);
+            for (let i = 0; i < response.length; i++) {
+                    let post = response[i];
+                    let tempHtml = addPostItem(post);
+                    $('#posts').append(tempHtml);
             }
-        })
+        },
+        error : function (request, status, error) {
+            console.log(error)
+        }
+    })
 }
 
+function showUsers() {
+    $('#users').empty();
+    $.ajax({
+        url : `/api/userList`,
+        type : 'get',
+        dataType : 'json',
+        async : false,
+        success : function (response) {
+            console.log(response);
+            for (let i = 0; i < response.length; i++) {
+                    let user = response[i];
+                    console.log(user.username);
+                    let tempHtml = addUserItem(user);
+                    $('#users').append(tempHtml);
+            }
+        },
+        error : function (request, status, error) {
+            console.log(error);
+        }
+    })
+}
+
+function addUserItem(user) {
+    return `<div class="box-recommend-profile">
+              <div class="profile-recommend">
+                  <img
+                          class="img-profile-32px"
+                          src="/images/watermelon.jpg"
+                          alt="프로필 이미지"
+                  />
+                  <div>
+                      <p class="userName-recommend">${user.username}</p>
+                  </div>
+              </div>
+              <button class="btn-blue" type="button">팔로우</button>
+          </div>`;
+}
 
 function addPostItem(post) {
     return `<div class="post">

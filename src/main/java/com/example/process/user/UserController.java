@@ -9,15 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
@@ -48,6 +45,13 @@ public class UserController {
         userService.signup(requestDto);
 
         return "redirect:/api/user/login-page";
+    }
+
+    @GetMapping("/userList")
+    public List<UserResponseDto> getUserList() {
+        List<UserResponseDto> responseDtos = userService.getUserList();
+        System.out.println("userService.getUserList() = " + userService.getUserList());
+        return userService.getUserList();
     }
 
     // 회원 관련 정보 받기
