@@ -51,7 +51,7 @@ $(document).ready(function () {
                 let heartStatus = heartIcon.src;
                 let heartCount = 0;
                 let idNumber = heartIcon.id.replace('heart-icon-', '');
-                if(parseInt(idNumber) === postLike.postId)
+                if (parseInt(idNumber) === postLike.postId)
                     heartCount++;
                 if (loginUsername === postLike.username && heartStatus.includes('heart.png'))
                     heartIcon.src = "/images/fullHeart.png";
@@ -130,9 +130,9 @@ function clickHeart(id, writer) {
     let heartIcon = document.getElementById(`heart-icon-${id}`);
     let heartStatus = heartIcon.src;
 
-    if(heartStatus.includes('heart.png')) {
+    if (heartStatus.includes('heart.png')) {
         clickFillHeart(id, writer, heartIcon)
-    } else if(heartStatus.includes('fullHeart.png')) {
+    } else if (heartStatus.includes('fullHeart.png')) {
         clickEmptyHeart(id, heartIcon)
     }
 }
@@ -171,19 +171,19 @@ function numberWithCommas(x) {
 function showPost() {
     $('#posts').empty();
     $.ajax({
-        url : `api/post`,
-        type : 'get',
-        dataType : 'json',
-        async : false,
-        success : function (response) {
+        url: `api/post`,
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        success: function (response) {
             console.log(response);
             for (let i = 0; i < response.length; i++) {
-                    let post = response[i];
-                    let tempHtml = addPostItem(post);
-                    $('#posts').append(tempHtml);
+                let post = response[i];
+                let tempHtml = addPostItem(post);
+                $('#posts').append(tempHtml);
             }
         },
-        error : function (request, status, error) {
+        error: function (request, status, error) {
             console.log(error)
         }
     })
@@ -192,20 +192,20 @@ function showPost() {
 function showUsers() {
     $('#users').empty();
     $.ajax({
-        url : `/api/userList`,
-        type : 'get',
-        dataType : 'json',
-        async : false,
-        success : function (response) {
+        url: `/api/userList`,
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        success: function (response) {
             console.log(response);
             for (let i = 0; i < response.length; i++) {
-                    let user = response[i];
-                    console.log(user.username);
-                    let tempHtml = addUserItem(user);
-                    $('#users').append(tempHtml);
+                let user = response[i];
+                console.log(user.username);
+                let tempHtml = addUserItem(user);
+                $('#users').append(tempHtml);
             }
         },
-        error : function (request, status, error) {
+        error: function (request, status, error) {
             console.log(error);
         }
     })
@@ -240,7 +240,7 @@ function addPostItem(post) {
                                 />
                                 <div>
                                     <p class="userName-feed">${post.user_name}</p>
-                                    <p class="location-feed">Seoul, Kroea</p>
+                                    <p class="location-feed">Seoul, Korea</p>
                                 </div>
                             </div>
                             <img class="icon-more" src="/images/more.png" alt="더보기 아이콘"/>
@@ -254,8 +254,15 @@ function addPostItem(post) {
                         <div class="icon-feed">
                             <div>
                                 <img id="heart-icon-${post.id}" onclick="clickHeart(${post.id}, '${post.user_name}')" class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
-                                <img class="img-icon" src="/images/chat.png" alt="댓글 아이콘"/>
+                                <img onclick="controlCommentArea(${post.id})" class="img-icon" src="/images/chat.png" alt="댓글 아이콘"/>
                                 <img onclick="deletePost(${post.id})" class="img-icon" src="/images/delete.png" alt="삭제 아이콘"/>
+                            </div>
+                        </div>
+                        <div id="${post.id}commentarea" style="display: none">
+                            <ul id="${post.id}commentlist" class="list-group list-group-flush"> </ul>
+                            <div id="${post.id}commentinput" class="input-group mb-3" style="display: none" ">
+                                <input id="${post.id}comment" type="text" class="form-control" placeholder="댓글 달기..." aria-label="댓글 달기..." aria-describedby="button-addon2">
+                                <button onClick="addComment(${post.id})" class="btn btn-outline-primary" type="button" id="button-addon2">게시</button>                      
                             </div>
                         </div>
 
@@ -286,4 +293,55 @@ function getToken() {
     }
 
     return auth;
+}
+
+function controlCommentArea(postId) {
+    let dynamicInputId = postId + 'commentinput';
+    let dynamicAreaId = postId + 'commentarea';
+
+    $('#' + dynamicInputId).show();
+    $('#' + dynamicAreaId).toggle();
+    showComment(postId);
+}
+
+function addComment(postId) {
+
+    let dynamicCommentText = $('#'+postId+'comment').val();
+
+    $.ajax({
+        type: "POST",
+        url: `/api/post/` + postId + `/comment`,
+        contentType: "application/json",
+        data: JSON.stringify({contents: dynamicCommentText}),
+        success: function (response) {
+            alert('댓글이 성공적으로 작성되었습니다.');
+            window.location.reload();
+        }
+    });
+}
+
+function showComment(postId) {
+    let dynamicPostId = postId + 'commentlist';
+    $('#' + dynamicPostId).empty();
+    $.ajax({
+        url: `api/post/` + postId + `/comment`,
+        type: 'get',
+        dataType: 'json',
+        async: false,
+        success: function (response) {
+            console.log(response);
+            for (let i = 0; i < response.length; i++) {
+                let comment = response[i];
+                let tempHtml = addCommentItem(comment);
+                $('#' + dynamicPostId).append(tempHtml);
+            }
+        },
+        error: function (request, status, error) {
+            console.log(error)
+        }
+    })
+}
+
+function addCommentItem(comment) {
+    return `<li class="list-group-item list-group-item-light">` + loginUsername + `     |      `+ comment.contents +`</li>`
 }
