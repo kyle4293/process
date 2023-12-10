@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class UserController {
@@ -48,6 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/userList")
+    @ResponseBody
     public List<UserResponseDto> getUserList() {
         List<UserResponseDto> responseDtos = userService.getUserList();
         System.out.println("userService.getUserList() = " + userService.getUserList());
@@ -67,12 +68,14 @@ public class UserController {
 
     //프로필 조회
     @GetMapping("/profile/{id}")
+    @ResponseBody
     public ProfileResponseDto getProfile(@PathVariable Long id) {
         return userService.getProfile(id);
     }
 
     //프로필 수정
     @PutMapping("/profile/{id}")
+    @ResponseBody
     public ProfileResponseDto updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ProfileRequestDto requestDto) {
         return userService.updateProfile(id, requestDto);
     }

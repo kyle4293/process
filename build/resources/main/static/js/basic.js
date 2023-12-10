@@ -2,6 +2,8 @@ const host = 'http://' + window.location.host;
 let targetId;
 let folderTargetId;
 
+let loginUsername = "";
+
 $(document).ready(function () {
     const auth = getToken();
 
@@ -21,6 +23,7 @@ $(document).ready(function () {
     })
         .done(function (res, status, xhr) {
             const username = res.username;
+            loginUsername = res.username;
             const isAdmin = !!res.admin;
 
             if (!username) {
@@ -37,6 +40,27 @@ $(document).ready(function () {
         .fail(function (jqXHR, textStatus) {
             logout();
         });
+
+    $.ajax({
+        type: "get",
+        url: `/api/post/like`,
+        contentType: "application/json",
+        success: function (response) {
+            Array.from(response).forEach(postLike => {
+                let heartIcon = document.getElementById(`heart-icon-${postLike.postId}`);
+                let heartStatus = heartIcon.src;
+                let heartCount = 0;
+                let idNumber = heartIcon.id.replace('heart-icon-', '');
+                if(parseInt(idNumber) === postLike.postId)
+                    heartCount++;
+                if (loginUsername === postLike.username && heartStatus.includes('heart.png'))
+                    heartIcon.src = "/images/fullHeart.png";
+
+                let heartCountId = document.getElementById(`heart-count-${postLike.postId}`);
+                heartCountId.innerText = `좋아요 ${heartCount}개`;
+            })
+        }
+    });
 
     // id 가 query 인 녀석 위에서 엔터를 누르면 execSearch() 함수를 실행하라는 뜻입니다.
     $('#query').on('keypress', function (e) {
@@ -83,9 +107,9 @@ function makePost() {
         contentType: "application/json",
         data: JSON.stringify({title: title, contents: contents}),
         success: function (response) {
-                  alert('게시글이 성공적으로 작성되었습니다.');
-                  window.location.reload();
-                }
+            alert('게시글이 성공적으로 작성되었습니다.');
+            window.location.reload();
+        }
     });
 }
 
@@ -93,13 +117,50 @@ function deletePost(id) {
 
     $.ajax({
         type: "delete",
-        url: `/api/post/`+id,
+        url: `/api/post/` + id,
         contentType: "application/json",
         success: function (response) {
-                  alert('게시글이 성공적으로 삭제되었습니다.');
-                  window.location.reload();
-                }
+            alert('게시글이 성공적으로 삭제되었습니다.');
+            window.location.reload();
+        }
     });
+}
+
+function clickHeart(id, writer) {
+    let heartIcon = document.getElementById(`heart-icon-${id}`);
+    let heartStatus = heartIcon.src;
+
+    if(heartStatus.includes('heart.png')) {
+        clickFillHeart(id, writer, heartIcon)
+    } else if(heartStatus.includes('fullHeart.png')) {
+        clickEmptyHeart(id, heartIcon)
+    }
+}
+
+function clickFillHeart(id, writer, heartIcon) {
+    if (loginUsername === writer) {
+        alert('자신의 게시물에는 좋아요를 누를 수 없습니다.');
+    } else {
+        $.ajax({
+            type: "post",
+            url: `/api/post/${id}/like`,
+            contentType: "application/json",
+            success: function (response) {
+                heartIcon.src = "/images/fullHeart.png";
+            }
+        })
+    }
+}
+
+function clickEmptyHeart(id, heartIcon) {
+    $.ajax({
+        type: "delete",
+        url: `/api/post/${id}/like`,
+        contentType: "application/json",
+        success: function (response) {
+            heartIcon.src = "/images/heart.png";
+        }
+    })
 }
 
 function numberWithCommas(x) {
@@ -192,13 +253,13 @@ function addPostItem(post) {
                         </div>
                         <div class="icon-feed">
                             <div>
-                                <img class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
+                                <img id="heart-icon-${post.id}" onclick="clickHeart(${post.id}, '${post.user_name}')" class="img-icon" src="/images/heart.png" alt="하트 아이콘"/>
                                 <img class="img-icon" src="/images/chat.png" alt="댓글 아이콘"/>
                                 <img onclick="deletePost(${post.id})" class="img-icon" src="/images/delete.png" alt="삭제 아이콘"/>
                             </div>
                         </div>
 
-                        <p class="text-like">좋아요 120개</p>
+                        <p id="heart-count-${post.id}" class="text-like">좋아요 0개</p>
                     </article>
                 </div>
             </div>`;
@@ -215,12 +276,12 @@ function getToken() {
 
     let auth = Cookies.get('Authorization');
 
-    if(auth === undefined) {
+    if (auth === undefined) {
         return '';
     }
 
     // kakao 로그인 사용한 경우 Bearer 추가
-    if(auth.indexOf('Bearer') === -1 && auth !== ''){
+    if (auth.indexOf('Bearer') === -1 && auth !== '') {
         auth = 'Bearer ' + auth;
     }
 
