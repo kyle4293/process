@@ -64,4 +64,16 @@ public class UserController {
 
         return new UserInfoDto(username, isAdmin);
     }
+
+    //프로필 조회
+    @GetMapping("/profile/{id}")
+    public ProfileResponseDto getProfile(@PathVariable Long id) {
+        return userService.getProfile(id);
+    }
+
+    //프로필 수정
+    @PutMapping("/profile/{id}")
+    public ProfileResponseDto updateProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody ProfileRequestDto requestDto) {
+        return userService.updateProfile(id, requestDto);
+    }
 }
