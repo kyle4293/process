@@ -343,5 +343,7 @@ function showComment(postId) {
 }
 
 function addCommentItem(comment) {
-    return `<li class="list-group-item list-group-item-light">` + loginUsername + `     |      `+ comment.contents +`</li>`
+
+
+    return `<li class="list-group-item list-group-item-light">` + comment.username + `     |      `+ comment.contents +`</li>`
 }
