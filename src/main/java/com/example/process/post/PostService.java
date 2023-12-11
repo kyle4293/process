@@ -83,11 +83,8 @@ public class PostService {
 
 
     @Transactional
-    private Post findPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> {
-                    throw new CustomException(ErrorCode.INDEX_NOT_FOUND);
-                }
+    public Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.INDEX_NOT_FOUND)
         );
     }
-
 }

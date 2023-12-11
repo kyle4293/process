@@ -21,6 +21,11 @@ public class PostController {
         this.postService = postService;
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
     @PostMapping("/post")
     public PostResponseDto createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PostRequestDto requestDto) {
         User user = userDetails.getUser();
